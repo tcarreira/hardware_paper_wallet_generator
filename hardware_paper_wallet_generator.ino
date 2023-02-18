@@ -2,6 +2,7 @@
 #include <oled.h>
 #include <string.h>
 
+#include "bip39_words.h"
 #define PIN_I2C_SDA 5
 #define PIN_I2C_SCL 4
 #define PIN_I2C_RESET NO_RESET_PIN
@@ -51,6 +52,33 @@ void loop()
   display.display();
 
   delay(500);
+
+  for (int i = 0; i < 8; i++)
+  {
+    display.draw_string(0 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i]));
+    display.draw_string(5 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 1]));
+    display.draw_string(10 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 2]));
+    display.draw_string(15 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 3]));
+    display.display();
+    delay(0);
+  }
+
+  for (int i = 8; i < BIP39_NUMBER_OF_WORDS / 4; i++)
+  {
+    while (digitalRead(LEFT_BUTTON_PIN) == LOW)
+    {
+      delay(10);
+    }
+    display.scroll_up(OLED_FONT_HEIGHT, 0);
+    display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i]));
+    display.draw_string(5 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 1]));
+    display.draw_string(10 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 2]));
+    display.draw_string(15 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 3]));
+    display.display();
+    delay(0);
+  }
+  delay(1000);
+  display.clear();
 
   // Draw hollow circles
   for (uint_least8_t radius = 3; radius < 62; radius += 3)
@@ -164,4 +192,21 @@ void contrast(int value)
   display.display();
   display.set_contrast(value);
   delay(500);
+}
+
+char *prefix(char *str)
+{
+  static char out[5];
+
+  if (strlen(str) <= 4)
+  {
+    sprintf(out, "%4s", str);
+  }
+  else
+  {
+    memcpy(out, str, 4);
+    out[5] = '\0';
+  }
+
+  return out;
 }
