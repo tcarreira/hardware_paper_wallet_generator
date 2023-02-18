@@ -1,0 +1,3 @@
+[submodule "arduino-lib-oled"]
+	path = arduino-lib-oled
+	url = git@github.com:durydevelop/arduino-lib-oled.git
