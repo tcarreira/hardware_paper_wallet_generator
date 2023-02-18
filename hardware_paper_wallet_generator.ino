@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include "bip39_words.h"
+#include "bip39_test_vectors.h"
+
 #define PIN_I2C_SDA 5
 #define PIN_I2C_SCL 4
 #define PIN_I2C_RESET NO_RESET_PIN
@@ -52,6 +54,23 @@ void loop()
   display.display();
 
   delay(500);
+
+  // Draw text with normal size
+  display.draw_string(20,2,"Sending text");
+  display.draw_string(20,15,"over serial");
+  display.display();
+  delay(500);
+
+  for (int i=0 ; i<BIP39_VECTOR_COUNT ; i++) {
+    Serial.printf("### Test vector #%d\n", i);
+    Serial.printf("randomBytes (byte): ");
+    for (int j=0; j<vectorEntropyBytesLength[i]; j++){
+      Serial.printf("%02x", vectorEntropy[i][j]);
+    }
+    Serial.printf("\nrandomBytes (str ): %s\n", vectorEntropyStr[i]);
+    Serial.printf("seed: %s\n\n", vectorSeed[i]);
+  }
+  display.clear();
 
   for (int i = 0; i < 8; i++)
   {
