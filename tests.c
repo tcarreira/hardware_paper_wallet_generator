@@ -1,6 +1,5 @@
-#include <assert.h>
-#include <stdbool.h>
+#include "bip39_test.c"
 
 int main() {
-  assert(false && "Opps");
+  test_bip39();
 }
