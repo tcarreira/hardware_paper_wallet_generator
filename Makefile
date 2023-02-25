@@ -6,5 +6,10 @@ test:
 	@./test.out
 	@echo "Tests successfully passed"
 
+testing_mac:
+	@echo "Starting continuous testing. CTRL+C to stop."
+	@sh -c "date ; ${MAKE} test " || true
+	@fswatch -o *.c *.h | xargs -n1 -I{} sh -c "echo ''; date ; ${MAKE} test "
+
 clean:
 	rm -rf *.out
