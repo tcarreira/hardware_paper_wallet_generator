@@ -2,6 +2,7 @@
     Downloaded from https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt
     DO NOT EDIT MANUALLY */
 
+#pragma once
 #define BIP39_NUMBER_OF_WORDS 2048
 
 const char* BIP39_WORDS[BIP39_NUMBER_OF_WORDS] = {

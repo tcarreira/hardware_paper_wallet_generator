@@ -27,6 +27,7 @@ def main():
         f.write("    Downloaded from %s\n" % words_url)
         f.write("    DO NOT EDIT MANUALLY */\n\n")
 
+        f.write("#pragma once\n")
         f.write("#define BIP39_NUMBER_OF_WORDS 2048\n\n")
         f.write("const char* BIP39_WORDS[BIP39_NUMBER_OF_WORDS] = {\n")
         for word in words[:-1]:
