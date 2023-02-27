@@ -1,6 +1,6 @@
 #include "bip39.h"
-#include "WjCryptLib/lib/WjCryptLib_Sha256.c"
 #include "bip39_words.h"
+#include "sha-2/sha-256.c"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,13 +22,10 @@ unsigned int extract_index(const unsigned char *bytes, unsigned int n) {
 }
 
 const unsigned char *entropy_checksum(const unsigned char *entropy, unsigned int len) {
-  Sha256Context sha256Context;
-  SHA256_HASH sha256Hash;
+  unsigned char sha256Hash[32];
 
   // Calculate sha256 hash
-  Sha256Initialise(&sha256Context);
-  Sha256Update(&sha256Context, entropy, len);
-  Sha256Finalise(&sha256Context, &sha256Hash);
+  calc_sha_256(sha256Hash, entropy, len);
 
   // Get most significant bits of hash. 128->4, 160->5, 192->6, 224->7, 256->8
   unsigned int needed_bits = len * 8 / 32;
@@ -37,7 +34,7 @@ const unsigned char *entropy_checksum(const unsigned char *entropy, unsigned int
   // Append most significant bits of hash to entropy
   unsigned char *entropy_with_checksum = malloc(len + 1);
   memcpy(entropy_with_checksum, entropy, len);
-  entropy_with_checksum[len] = sha256Hash.bytes[0] & mask;
+  entropy_with_checksum[len] = sha256Hash[0] & mask;
 
   return entropy_with_checksum;
 }

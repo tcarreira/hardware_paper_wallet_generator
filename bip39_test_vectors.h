@@ -3,6 +3,7 @@
     DO NOT EDIT MANUALLY */
 // clang-format off
 
+#pragma once
 #define BIP39_VECTOR_COUNT 24
 
 const int   vectorEntropyBytesLength[BIP39_VECTOR_COUNT] = {16, 16, 16, 16, 24, 24, 24, 24, 32, 32, 32, 32, 16, 24, 32, 16, 24, 32, 16, 24, 32, 16, 24, 32, };
