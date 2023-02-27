@@ -1,0 +1,9 @@
+# The Linux source code style, but with longer lines
+BasedOnStyle: LLVM
+IndentWidth: 2
+UseTab: AlignWithSpaces
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: InlineOnly

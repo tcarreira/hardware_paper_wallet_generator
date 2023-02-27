@@ -11,5 +11,8 @@ testing_mac:
 	@sh -c "date ; ${MAKE} test " || true
 	@fswatch -o *.c *.h | xargs -n1 -I{} sh -c "echo ''; date ; ${MAKE} test "
 
+format:
+	@clang-format -i *.c *.h
+
 clean:
 	rm -rf *.out

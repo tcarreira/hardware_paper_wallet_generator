@@ -2,8 +2,8 @@
 #include <oled.h>
 #include <string.h>
 
-#include "bip39_words.h"
 #include "bip39_test_vectors.h"
+#include "bip39_words.h"
 
 #define PIN_I2C_SDA 5
 #define PIN_I2C_SCL 4
@@ -23,12 +23,13 @@
 OLED display = OLED(PIN_I2C_SDA, PIN_I2C_SCL, PIN_I2C_RESET, OLED::W_128, OLED::H_64, OLED::CTRL_SSD1306, I2C_ADDRESS);
 
 static const uint8_t bitmap[] = {
-    1, 2, 4, 8, 16, 32, 64, 128, 128, 128, 192, 192, 128, 128, 128, 64, 32, 16, 8, 4, 2, 1,        // first page (8 vertical bits, 22 columns)
-    255, 255, 255, 255, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 255, 255, 255, 255 // second page (8 vertical bits, 22 columns)
+    1,   2,   4,   8,   16, 32, 64, 128, 128, 128, 192,
+    192, 128, 128, 128, 64, 32, 16, 8,   4,   2,   1, // first page (8 vertical bits, 22 columns)
+    255, 255, 255, 255, 15, 15, 15, 15,  15,  15,  15,
+    15,  15,  15,  15,  15, 15, 15, 255, 255, 255, 255 // second page (8 vertical bits, 22 columns)
 };
 
-void setup()
-{
+void setup() {
   delay(500);
   Serial.begin(9600);
   display.begin();
@@ -41,11 +42,11 @@ void setup()
   digitalWrite(LEFT_BUTTON_PIN_LOW, LOW);
   digitalWrite(RIGHT_BUTTON_PIN_LOW, LOW);
 
-  while (!Serial) {}
+  while (!Serial) {
+  }
 }
 
-void loop()
-{
+void loop() {
   // Draw pixels in the outer edges
   display.draw_pixel(0, 0);
   display.draw_pixel(127, 0);
@@ -56,15 +57,15 @@ void loop()
   delay(500);
 
   // Draw text with normal size
-  display.draw_string(20,2,"Sending text");
-  display.draw_string(20,15,"over serial");
+  display.draw_string(20, 2, "Sending text");
+  display.draw_string(20, 15, "over serial");
   display.display();
   delay(500);
 
-  for (int i=0 ; i<BIP39_VECTOR_COUNT ; i++) {
+  for (int i = 0; i < BIP39_VECTOR_COUNT; i++) {
     Serial.printf("### Test vector #%d\n", i);
     Serial.printf("randomBytes (byte): ");
-    for (int j=0; j<vectorEntropyBytesLength[i]; j++){
+    for (int j = 0; j < vectorEntropyBytesLength[i]; j++) {
       Serial.printf("%02x", vectorEntropy[i][j]);
     }
     Serial.printf("\nrandomBytes (str ): %s\n", vectorEntropyStr[i]);
@@ -72,8 +73,7 @@ void loop()
   }
   display.clear();
 
-  for (int i = 0; i < 8; i++)
-  {
+  for (int i = 0; i < 8; i++) {
     display.draw_string(0 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i]));
     display.draw_string(5 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 1]));
     display.draw_string(10 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 2]));
@@ -82,10 +82,8 @@ void loop()
     delay(0);
   }
 
-  for (int i = 8; i < BIP39_NUMBER_OF_WORDS / 4; i++)
-  {
-    while (digitalRead(LEFT_BUTTON_PIN) == LOW)
-    {
+  for (int i = 8; i < BIP39_NUMBER_OF_WORDS / 4; i++) {
+    while (digitalRead(LEFT_BUTTON_PIN) == LOW) {
       delay(10);
     }
     display.scroll_up(OLED_FONT_HEIGHT, 0);
@@ -100,12 +98,10 @@ void loop()
   display.clear();
 
   // Draw hollow circles
-  for (uint_least8_t radius = 3; radius < 62; radius += 3)
-  {
+  for (uint_least8_t radius = 3; radius < 62; radius += 3) {
     delay(50);
     display.draw_circle(64, 16, radius);
-    if (radius > 15)
-    {
+    if (radius > 15) {
       display.draw_circle(64, 16, radius - 15, OLED::SOLID, OLED::BLACK);
     }
     display.display();
@@ -169,8 +165,7 @@ void loop()
 
   // Flash the display
   delay(1000);
-  for (int i = 0; i < 10; i++)
-  {
+  for (int i = 0; i < 10; i++) {
     display.set_invert(true);
     delay(200);
     display.set_invert(false);
@@ -200,8 +195,7 @@ void loop()
   display.clear();
 }
 
-void contrast(int value)
-{
+void contrast(int value) {
   char buffer[4];
   display.clear();
   display.draw_string(0, 0, "Contrast:");
@@ -213,16 +207,12 @@ void contrast(int value)
   delay(500);
 }
 
-char *prefix(char *str)
-{
+char *prefix(char *str) {
   static char out[5];
 
-  if (strlen(str) <= 4)
-  {
+  if (strlen(str) <= 4) {
     sprintf(out, "%4s", str);
-  }
-  else
-  {
+  } else {
     memcpy(out, str, 4);
     out[5] = '\0';
   }
