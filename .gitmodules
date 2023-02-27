@@ -4,3 +4,6 @@
 [submodule "WjCryptLib"]
 	path = WjCryptLib
 	url = https://github.com/WaterJuice/WjCryptLib.git
+[submodule "sha-2"]
+	path = sha-2
+	url = https://github.com/amosnier/sha-2.git
