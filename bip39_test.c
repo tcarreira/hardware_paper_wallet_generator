@@ -20,8 +20,7 @@ void test_bip39_entropy_to_words() {
     unsigned char *entropy = (unsigned char *)vectorEntropy[test_num];
     const char **words = entropy_to_words(entropy, vectorEntropyBytesLength[test_num]);
 
-    for (int i = 0; i < vectorEntropyBytesLength[test_num]; i++) {
-      printf("DEBUG3:::: word %d: %s == %s\n", i, words[i], vectorWords[test_num][i]);
+    for (int i = 0; i < vectorWordsCount[test_num]; i++) {
       assert(strcmp(words[i], vectorWords[test_num][i]) == 0);
     }
   }
