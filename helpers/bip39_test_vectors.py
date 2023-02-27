@@ -48,7 +48,7 @@ def main():
             f.write('    "%s",\n' % vector[0])
         f.write("};\n")
 
-        f.write("const char  vectorEntropy[BIP39_VECTOR_COUNT][32] = {\n")
+        f.write("const unsigned char vectorEntropy[BIP39_VECTOR_COUNT][32] = {\n")
         for vector in vectors["english"]:
             f.write("    {0x%s},\n" % ", 0x".join(
                 c for c in wrap(vector[0], 2)))
