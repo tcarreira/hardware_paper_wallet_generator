@@ -1,3 +1,6 @@
 [submodule "arduino-lib-oled"]
 	path = arduino-lib-oled
 	url = git@github.com:durydevelop/arduino-lib-oled.git
+[submodule "WjCryptLib"]
+	path = WjCryptLib
+	url = https://github.com/WaterJuice/WjCryptLib.git
