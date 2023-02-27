@@ -57,7 +57,7 @@ def main():
         # Mnemonic
         f.write("const int   vectorWordsCount[BIP39_VECTOR_COUNT] = {")
         for vector in vectors["english"]:
-            f.write("%d, " % (len(vector[1])*4/8))
+            f.write("%d, " % (len(vector[1].split())))
         f.write("};\n")
 
         f.write("const char* vectorWords[BIP39_VECTOR_COUNT][24] = {\n")

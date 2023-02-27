@@ -60,7 +60,7 @@ const char  vectorEntropy[BIP39_VECTOR_COUNT][32] = {
     {0xf5, 0x85, 0xc1, 0x1a, 0xec, 0x52, 0x0d, 0xb5, 0x7d, 0xd3, 0x53, 0xc6, 0x95, 0x54, 0xb2, 0x1a, 0x89, 0xb2, 0x0f, 0xb0, 0x65, 0x09, 0x66, 0xfa, 0x0a, 0x9d, 0x6f, 0x74, 0xfd, 0x98, 0x9d, 0x8f},
 };
 
-const int   vectorWordsCount[BIP39_VECTOR_COUNT] = {46, 37, 39, 24, 70, 55, 61, 36, 93, 74, 82, 48, 38, 59, 78, 36, 53, 78, 37, 59, 73, 39, 60, 76, };
+const int   vectorWordsCount[BIP39_VECTOR_COUNT] = {12, 12, 12, 12, 18, 18, 18, 18, 24, 24, 24, 24, 12, 18, 24, 12, 18, 24, 12, 18, 24, 12, 18, 24, };
 const char* vectorWords[BIP39_VECTOR_COUNT][24] = {
     {"abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "abandon", "about"},
     {"legal", "winner", "thank", "year", "wave", "sausage", "worth", "useful", "legal", "winner", "thank", "yellow"},
