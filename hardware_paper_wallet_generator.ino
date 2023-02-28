@@ -16,6 +16,9 @@
 #define RIGHT_BUTTON_PIN 17
 #define RIGHT_BUTTON_PIN_LOW 18
 
+#define ENTROPY_BITS 256
+#define ENTROPY_BYTES (ENTROPY_BITS / 8)
+
 // There are 2 different versions of the board
 // OLED display=OLED(2,14,4);
 // OLED display=OLED(4,5,16);
@@ -45,6 +48,8 @@ void setup() {
 
   while (!Serial) {
   }
+
+  randomSeed(analogRead(0));
 }
 
 void loop() {
@@ -57,6 +62,42 @@ void loop() {
 
   delay(100);
 
+  // generate Random entropy (wip: not crypto safe)
+  display.clear();
+  char buf[100];
+  sprintf(buf, "## Random seed:");
+  display.draw_string(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, buf);
+  display.display();
+
+  unsigned char entropy[ENTROPY_BYTES];
+  for (int i = 0; i < ENTROPY_BYTES; i++) {
+    entropy[i] = random(0, 255);
+  }
+
+  // Display random entropy
+  for (int i = 0; i < ENTROPY_BYTES; i += 8) {
+    sprintf(buf, "%02d:", i);
+    display.draw_string(0 * OLED_FONT_WIDTH, (i / 8 + 2) * OLED_FONT_HEIGHT, buf);
+  }
+
+  for (int j = 0; j < ENTROPY_BYTES; j++) {
+    sprintf(buf, "%02x", entropy[j]);
+    display.draw_string(((2 * (j % 8)) + 4) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, buf);
+  }
+
+  display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, "press left...");
+  display.display();
+
+  // wait for left button to continue
+  while (digitalRead(LEFT_BUTTON_PIN) == HIGH) {
+    delay(10);
+  }
+
+  //
+  //
+  //
+  //
+
   // Draw text with normal size
   display.draw_string(20, 2, "Sending text");
   display.draw_string(20, 15, "over serial");
@@ -64,7 +105,6 @@ void loop() {
   delay(400);
 
   display.clear();
-  char buf[40];
   for (int i = 0; i < BIP39_VECTOR_COUNT; i++) {
 
     Serial.printf("### Test vector #%d\n", i);
