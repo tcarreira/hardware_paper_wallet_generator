@@ -64,10 +64,7 @@ void loop() {
 
   // generate Random entropy (wip: not crypto safe)
   display.clear();
-  char buf[100];
-  sprintf(buf, "## Random seed:");
-  display.draw_string(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, buf);
-  display.display();
+  display_printf(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, "## Random seed:");
 
   unsigned char entropy[ENTROPY_BYTES];
   for (int i = 0; i < ENTROPY_BYTES; i++) {
@@ -76,22 +73,21 @@ void loop() {
 
   // Display random entropy
   for (int i = 0; i < ENTROPY_BYTES; i += 8) {
-    sprintf(buf, "%02d:", i);
-    display.draw_string(0 * OLED_FONT_WIDTH, (i / 8 + 2) * OLED_FONT_HEIGHT, buf);
+    display_printf(0 * OLED_FONT_WIDTH, (i / 8 + 2) * OLED_FONT_HEIGHT, "%02d:", i);
   }
 
   for (int j = 0; j < ENTROPY_BYTES; j++) {
-    sprintf(buf, "%02x", entropy[j]);
-    display.draw_string(((2 * (j % 8)) + 4) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, buf);
+    display_printf(((2 * (j % 8)) + 4) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, "%02x", entropy[j]);
   }
 
-  display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, "press left...");
+  display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, "       get words ->");
   display.display();
 
   // wait for left button to continue
-  while (digitalRead(LEFT_BUTTON_PIN) == HIGH) {
+  while (digitalRead(RIGHT_BUTTON_PIN) == HIGH) {
     delay(10);
   }
+  display.clear();
 
   //
   //
@@ -109,16 +105,14 @@ void loop() {
 
     Serial.printf("### Test vector #%d\n", i);
     Serial.printf("entropy (byte): ");
-    sprintf(buf, "# Test vector #%d", i);
-    display.draw_string(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, buf);
+    display_printf(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, "# Test vector #%d", i);
 
     unsigned char *entropy = (unsigned char *)malloc(vectorEntropyBytesLengthAtIndex(i));
     vectorEntropyAtIndex(entropy, i);
 
     for (int j = 0; j < vectorEntropyBytesLengthAtIndex(i); j++) {
-      sprintf(buf, "%02x", entropy[j]);
-      Serial.printf(buf);
-      display.draw_string((2 * (j % 8)) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, buf);
+      Serial.printf("%02x", entropy[j]);
+      display_printf((2 * (j % 8)) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, "%02x", entropy[j]);
     }
     Serial.printf("\n");
 
@@ -275,4 +269,13 @@ char *getwordat(int i) {
   }
 
   return out;
+}
+
+void display_printf(unsigned int x, unsigned int y, const char *format, ...) {
+  char buffer[128];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(buffer, sizeof(buffer), format, args);
+  va_end(args);
+  display.draw_string(x, y, buffer);
 }
