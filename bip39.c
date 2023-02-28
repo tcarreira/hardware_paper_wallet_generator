@@ -7,7 +7,9 @@
 #define WORD_BITS 11
 
 const char *word_from_index(int idx) {
-  return BIP39_WORDS[idx];
+  char *word = (char *) malloc(40 * sizeof(char));
+  bip39_word_at_index(word, idx);
+  return word;
 }
 
 unsigned int extract_index(const unsigned char *bytes, unsigned int n) {
@@ -49,20 +51,22 @@ const char **entropy_to_words(const unsigned char *entropy, unsigned int len) {
   return str;
 }
 
-int word_to_index(const char *word, const char **words, unsigned int words_len) {
-  for (int i = 0; i < words_len; i++) {
-    if (strcmp(word, words[i]) == 0) {
+int word_to_index(const char *word) {
+  for (int i = 0; i < BIP39_NUMBER_OF_WORDS; i++) {
+    char tmp_word[40];
+    bip39_word_at_index(tmp_word, i);
+    if (strcmp(word, tmp_word) == 0) {
       return i;
     }
   }
   return -1;
 }
 
-const unsigned char *words_to_bytes(const char **words, unsigned int words_len) {
+const unsigned char *words_to_bytes(char **words, unsigned int words_len) {
   unsigned char *bytes = malloc(words_len * WORD_BITS / 8 + 1);
 
   for (int wi = 0, pos = 0; wi < words_len; wi++) {
-    int found = word_to_index(words[wi], BIP39_WORDS, BIP39_NUMBER_OF_WORDS);
+    int found = word_to_index(words[wi]);
     for (int b = 0; b < WORD_BITS; b++, pos++) {
       bytes[pos / 8] |= (found >> (WORD_BITS - 1 - b)) << (7 - (pos % 8));
     }

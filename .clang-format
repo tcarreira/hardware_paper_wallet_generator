@@ -3,7 +3,7 @@ BasedOnStyle: LLVM
 IndentWidth: 2
 UseTab: AlignWithSpaces
 BreakBeforeBraces: Attach
-AllowShortIfStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: true
 IndentCaseLabels: false
 ColumnLimit: 120
 AllowShortFunctionsOnASingleLine: InlineOnly

@@ -1,7 +1,9 @@
-#include "bip39.c"
+#include "bip39_test.h"
+#include "bip39.h"
 #include "bip39_test_vectors.h"
 #include "bip39_words.h"
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 
 void test_bip39_word_from_index() {
@@ -17,21 +19,32 @@ void test_bip39_get_word_index() {
 
 void test_bip39_entropy_to_words() {
   for (int test_num = 0; test_num < BIP39_VECTOR_COUNT; test_num++) {
-    unsigned char *entropy = (unsigned char *)vectorEntropy[test_num];
-    const char **words = entropy_to_words(entropy, vectorEntropyBytesLength[test_num]);
+    unsigned char *entropy = (unsigned char *)malloc(vectorEntropyBytesLengthAtIndex(test_num));
+    vectorEntropyAtIndex(entropy, test_num);
 
-    for (int i = 0; i < vectorWordsCount[test_num]; i++) {
-      assert(strcmp(words[i], vectorWords[test_num][i]) == 0);
+    const char **words = entropy_to_words(entropy, vectorEntropyBytesLengthAtIndex(test_num));
+
+    for (int i = 0; i < vectorWordsCountAtIndex(test_num); i++) {
+      char word[40];
+      vectorWordAtIndex(word, test_num, i);
+      assert(strcmp(words[i], word) == 0);
     }
   }
 }
 
 void test_bip39_words_to_bytes() {
   for (int test_num = 1; test_num < BIP39_VECTOR_COUNT; test_num++) {
-    const unsigned char *bytes = words_to_bytes(vectorWords[test_num], vectorWordsCount[test_num]);
+    char** words = (char**)malloc(vectorWordsCountAtIndex(test_num) * sizeof(char*));
+    for (int i = 0; i < vectorWordsCountAtIndex(test_num); i++) {
+      words[i] = (char*)malloc(40 * sizeof(char));
+      vectorWordAtIndex(words[i], test_num, i);
+    }
+    const unsigned char *bytes = words_to_bytes(words, vectorWordsCountAtIndex(test_num));
 
-    for (int i = 0; i < vectorEntropyBytesLength[test_num]; i++) {
-      assert(bytes[i] == vectorEntropy[test_num][i]);
+    unsigned char *vector_entropy = (unsigned char *)malloc(vectorEntropyBytesLengthAtIndex(test_num));
+    vectorEntropyAtIndex(vector_entropy, test_num);
+    for (int i = 0; i < vectorEntropyBytesLengthAtIndex(test_num); i++) {
+      assert(bytes[i] == vector_entropy[i]);
     }
   }
 }
