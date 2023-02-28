@@ -63,22 +63,9 @@ void loop() {
   delay(100);
 
   // generate Random entropy (wip: not crypto safe)
-  display.clear();
-  display_printf(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, "## Random seed:");
-
   unsigned char entropy[ENTROPY_BYTES];
-  for (int i = 0; i < ENTROPY_BYTES; i++) {
-    entropy[i] = random(0, 255);
-  }
-
-  // Display random entropy
-  for (int i = 0; i < ENTROPY_BYTES; i += 8) {
-    display_printf(0 * OLED_FONT_WIDTH, (i / 8 + 2) * OLED_FONT_HEIGHT, "%02d:", i);
-  }
-
-  for (int j = 0; j < ENTROPY_BYTES; j++) {
-    display_printf(((2 * (j % 8)) + 4) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, "%02x", entropy[j]);
-  }
+  generate_entropy(entropy, ENTROPY_BYTES);
+  display_entropy(entropy, ENTROPY_BYTES);
 
   display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, "       get words ->");
   display.display();
@@ -278,4 +265,27 @@ void display_printf(unsigned int x, unsigned int y, const char *format, ...) {
   vsnprintf(buffer, sizeof(buffer), format, args);
   va_end(args);
   display.draw_string(x, y, buffer);
+}
+
+void generate_entropy(unsigned char *entropy, size_t len) {
+  for (size_t i = 0; i < len; i++) {
+    entropy[i] = random(0, 256);
+  }
+}
+
+void display_entropy(const unsigned char *entropy, size_t len) {
+  display.clear();
+  display.draw_string(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, "## Random seed:");
+
+  // print left column index
+  for (int i = 0; i < len; i += 8) {
+    display_printf(0 * OLED_FONT_WIDTH, (i / 8 + 2) * OLED_FONT_HEIGHT, "%02d:", i);
+  }
+
+  // print bytes
+  for (int j = 0; j < len; j++) {
+    display_printf(((2 * (j % 8)) + 4) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, "%02x", entropy[j]);
+  }
+
+  display.display();
 }
