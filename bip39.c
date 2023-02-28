@@ -7,7 +7,7 @@
 #define WORD_BITS 11
 
 const char *word_from_index(int idx) {
-  char *word = (char *) malloc(40 * sizeof(char));
+  char *word = (char *)malloc(40 * sizeof(char));
   bip39_word_at_index(word, idx);
   return word;
 }
@@ -34,7 +34,7 @@ const unsigned char *entropy_checksum(const unsigned char *entropy, unsigned int
   unsigned char mask = 0xff << (8 - needed_bits);
 
   // Append most significant bits of hash to entropy
-  unsigned char *entropy_with_checksum = malloc(len + 1);
+  unsigned char *entropy_with_checksum = (unsigned char *)malloc(len + 1);
   memcpy(entropy_with_checksum, entropy, len);
   entropy_with_checksum[len] = sha256Hash[0] & mask;
 
@@ -43,7 +43,7 @@ const unsigned char *entropy_checksum(const unsigned char *entropy, unsigned int
 
 const char **entropy_to_words(const unsigned char *entropy, unsigned int len) {
   const unsigned char *entropy_with_checksum = entropy_checksum(entropy, len);
-  const char **str = malloc(len * sizeof(char *));
+  const char **str = (const char **)malloc(len * sizeof(char *));
   for (int i = 0; i < len; i++) {
     unsigned int idx = extract_index(entropy_with_checksum, i);
     str[i] = word_from_index(idx);
@@ -63,7 +63,7 @@ int word_to_index(const char *word) {
 }
 
 const unsigned char *words_to_bytes(char **words, unsigned int words_len) {
-  unsigned char *bytes = malloc(words_len * WORD_BITS / 8 + 1);
+  unsigned char *bytes = (unsigned char *)malloc(words_len * WORD_BITS / 8 + 1);
 
   for (int wi = 0, pos = 0; wi < words_len; wi++) {
     int found = word_to_index(words[wi]);
