@@ -2,6 +2,7 @@
 #include <oled.h>
 #include <string.h>
 
+#include "bip39.h"
 #include "bip39_test_vectors.h"
 #include "bip39_words.h"
 
@@ -54,30 +55,43 @@ void loop() {
   display.draw_pixel(0, 63);
   display.display();
 
-  delay(500);
+  delay(100);
 
   // Draw text with normal size
   display.draw_string(20, 2, "Sending text");
   display.draw_string(20, 15, "over serial");
   display.display();
-  delay(500);
+  delay(400);
 
-  for (int i = 0; i < BIP39_VECTOR_COUNT; i++) {
-    Serial.printf("### Test vector #%d\n", i);
-    Serial.printf("randomBytes (byte): ");
-    for (int j = 0; j < vectorEntropyBytesLength[i]; j++) {
-      Serial.printf("%02x", vectorEntropy[i][j]);
-    }
-    Serial.printf("\nrandomBytes (str ): %s\n", vectorEntropyStr[i]);
-    Serial.printf("seed: %s\n\n", vectorSeed[i]);
-  }
   display.clear();
+  char buf[40];
+  for (int i = 0; i < BIP39_VECTOR_COUNT; i++) {
+
+    Serial.printf("### Test vector #%d\n", i);
+    Serial.printf("entropy (byte): ");
+    sprintf(buf, "# Test vector #%d", i);
+    display.draw_string(0 * OLED_FONT_WIDTH, 0 * OLED_FONT_HEIGHT, buf);
+
+    unsigned char *entropy = (unsigned char *)malloc(vectorEntropyBytesLengthAtIndex(i));
+    vectorEntropyAtIndex(entropy, i);
+
+    for (int j = 0; j < vectorEntropyBytesLengthAtIndex(i); j++) {
+      sprintf(buf, "%02x", entropy[j]);
+      Serial.printf(buf);
+      display.draw_string((2 * (j % 8)) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, buf);
+    }
+    Serial.printf("\n");
+
+    display.display();
+    delay(1000);
+    display.clear();
+  }
 
   for (int i = 0; i < 8; i++) {
-    display.draw_string(0 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i]));
-    display.draw_string(5 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 1]));
-    display.draw_string(10 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 2]));
-    display.draw_string(15 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 3]));
+    display.draw_string(0 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, getwordat(4 * i));
+    display.draw_string(5 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, getwordat(4 * i + 1));
+    display.draw_string(10 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, getwordat(4 * i + 2));
+    display.draw_string(15 * OLED_FONT_WIDTH, i * OLED_FONT_HEIGHT, getwordat(4 * i + 3));
     display.display();
     delay(0);
   }
@@ -87,10 +101,10 @@ void loop() {
       delay(10);
     }
     display.scroll_up(OLED_FONT_HEIGHT, 0);
-    display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i]));
-    display.draw_string(5 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 1]));
-    display.draw_string(10 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 2]));
-    display.draw_string(15 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, prefix((char *)BIP39_WORDS[4 * i + 3]));
+    display.draw_string(0 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, getwordat(4 * i));
+    display.draw_string(5 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, getwordat(4 * i + 1));
+    display.draw_string(10 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, getwordat(4 * i + 2));
+    display.draw_string(15 * OLED_FONT_WIDTH, 7 * OLED_FONT_HEIGHT, getwordat(4 * i + 3));
     display.display();
     delay(0);
   }
@@ -207,8 +221,11 @@ void contrast(int value) {
   delay(500);
 }
 
-char *prefix(char *str) {
+char *getwordat(int i) {
   static char out[5];
+
+  char str[40];
+  bip39_word_at_index(str, i);
 
   if (strlen(str) <= 4) {
     sprintf(out, "%4s", str);
