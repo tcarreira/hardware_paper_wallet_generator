@@ -49,8 +49,8 @@ const unsigned char *entropy_checksum(const unsigned char *entropy, unsigned int
 
 const char **entropy_to_words(const unsigned char *entropy, unsigned int len) {
   const unsigned char *entropy_with_checksum = entropy_checksum(entropy, len);
-  const char **str = (const char **)malloc(len * sizeof(char *));
-  for (int i = 0; i < len; i++) {
+  const char **str = (const char **)malloc((len+1) * sizeof(char *));
+  for (int i = 0; i <= len; i++) {
     unsigned int idx = extract_index(entropy_with_checksum, i);
     str[i] = word_from_index(idx);
   }
