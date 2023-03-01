@@ -10,6 +10,14 @@ void test_bip39_word_from_index() {
   assert(BIP39_NUMBER_OF_WORDS == 2048);
 }
 
+void test_number_of_words_from_entropy_size() {
+  assert(number_of_words_from_entropy_size(128) == 12);
+  assert(number_of_words_from_entropy_size(160) == 15);
+  assert(number_of_words_from_entropy_size(192) == 18);
+  assert(number_of_words_from_entropy_size(224) == 21);
+  assert(number_of_words_from_entropy_size(256) == 24);
+}
+
 void test_bip39_get_word_index() {
   assert(strcmp(word_from_index(0), "abandon") == 0);
   assert(strcmp(word_from_index(255), "cable") == 0);
@@ -51,6 +59,7 @@ void test_bip39_words_to_bytes() {
 
 void test_bip39() {
   test_bip39_word_from_index();
+  test_number_of_words_from_entropy_size();
   test_bip39_get_word_index();
   test_bip39_entropy_to_words();
   test_bip39_words_to_bytes();

@@ -12,6 +12,11 @@ const char *word_from_index(int idx) {
   return word;
 }
 
+unsigned int number_of_words_from_entropy_size(unsigned int entropy_bits) {
+  unsigned int checksum_bits = entropy_bits / 32;
+  return (entropy_bits + checksum_bits) / WORD_BITS;
+};
+
 unsigned int extract_index(const unsigned char *bytes, unsigned int n) {
   unsigned int value = 0;
   unsigned int end = n * WORD_BITS + WORD_BITS;
@@ -40,6 +45,7 @@ const unsigned char *entropy_checksum(const unsigned char *entropy, unsigned int
 
   return entropy_with_checksum;
 }
+
 
 const char **entropy_to_words(const unsigned char *entropy, unsigned int len) {
   const unsigned char *entropy_with_checksum = entropy_checksum(entropy, len);
