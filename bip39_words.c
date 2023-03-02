@@ -2055,7 +2055,7 @@ const char* BIP39_WORDS[BIP39_NUMBER_OF_WORDS] = {
   "zebra",
   "zero",
   "zone",
-    "zoo"
+  "zoo"
 };
 
 void bip39_word_at_index(char* dest_str, unsigned int index){
