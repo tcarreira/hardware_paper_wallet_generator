@@ -31,13 +31,6 @@
 // OLED display=OLED(5,4); // working!!!! TTGO T1
 OLED display = OLED(PIN_I2C_SDA, PIN_I2C_SCL, PIN_I2C_RESET, OLED::W_128, OLED::H_64, OLED::CTRL_SSD1306, I2C_ADDRESS);
 
-static const uint8_t bitmap[] = {
-    1,   2,   4,   8,   16, 32, 64, 128, 128, 128, 192,
-    192, 128, 128, 128, 64, 32, 16, 8,   4,   2,   1, // first page (8 vertical bits, 22 columns)
-    255, 255, 255, 255, 15, 15, 15, 15,  15,  15,  15,
-    15,  15,  15,  15,  15, 15, 15, 255, 255, 255, 255 // second page (8 vertical bits, 22 columns)
-};
-
 void setup() {
   delay(500);
   Serial.begin(9600);
