@@ -19,7 +19,7 @@
 #define BUTTON_LEFT_PRESS 1
 #define BUTTON_RIGHT_PRESS 2
 
-#define ENTROPY_BITS 256
+#define ENTROPY_BITS 256 // 128 (12words), 160 (15w), 192 (18w), 224 (21w), 256 (24w)
 #define ENTROPY_BYTES (ENTROPY_BITS / 8)
 
 #define OLED_BOTTOM_LINE (7 * OLED_FONT_HEIGHT)
@@ -62,7 +62,7 @@ void loop() {
   display.draw_string(0, 2 * OLED_FONT_HEIGHT, "       Bitcoin       ");
   display.draw_string(0, 3 * OLED_FONT_HEIGHT, "     Paper Wallet    ");
   display.draw_string(0, 4 * OLED_FONT_HEIGHT, "      Generator      ");
-  display.draw_string(0, 1 * OLED_BOTTOM_LINE, "    (wip: 2023-02-28)");
+  display.draw_string(0, 1 * OLED_BOTTOM_LINE, "2023-05-26 |  23-5-26");
   display.display();
   delay(1500);
 
@@ -71,8 +71,22 @@ void loop() {
   *****************************************************************************/
   // generate Random entropy (wip: not crypto safe)
   unsigned char entropy[ENTROPY_BYTES];
-  generate_entropy(entropy, ENTROPY_BYTES);
-  display_draw_entropy(entropy, ENTROPY_BYTES);
+  memset(entropy, 0, ENTROPY_BYTES);
+
+  display_choose_entropy_mode();
+  if (wait_for_button(BUTTON_LEFT_PRESS, BUTTON_RIGHT_PRESS)) {
+    generate_entropy_unsafe(entropy, ENTROPY_BYTES);
+    display_draw_entropy(entropy, ENTROPY_BYTES, "Random Seed (UNSAFE):");
+  } else {
+    char buf[40];
+    sprintf(buf, "generating (0/%d):", ENTROPY_BITS);
+    display_draw_entropy(entropy, ENTROPY_BYTES, buf);
+    delay(500);
+    generate_entropy_manually(entropy, ENTROPY_BYTES);
+    display_draw_entropy(entropy, ENTROPY_BYTES, "Random Seed:");
+  }
+  display.draw_string(0, OLED_BOTTOM_LINE, "        show words ->");
+  display.display();
 
   // wait for right button to continue
   while (button_pressed() != BUTTON_RIGHT_PRESS) {
@@ -123,15 +137,52 @@ void display_printf(unsigned int x, unsigned int y, const char *format, ...) {
   display.draw_string(x, y, buffer);
 }
 
-void generate_entropy(unsigned char *entropy, size_t len) {
+void display_choose_entropy_mode() {
+  display.clear();
+  display.draw_string(0, 0 * OLED_FONT_HEIGHT, " Choose Entropy Mode ");
+  display.draw_string(0, 1 * OLED_FONT_HEIGHT, "                     ");
+  display.draw_string(0, 2 * OLED_FONT_HEIGHT, "Fast       TrueRandom");
+  display.draw_string(0, 3 * OLED_FONT_HEIGHT, "(UNSAFE)       (slow)");
+  display.draw_string(0, 4 * OLED_FONT_HEIGHT, " |                 | ");
+  display.draw_string(0, 5 * OLED_FONT_HEIGHT, " |                 | ");
+  display.draw_string(0, 6 * OLED_FONT_HEIGHT, " |                 | ");
+  display.draw_string(0, 7 * OLED_FONT_HEIGHT, " v (L)         (R) v ");
+  display.draw_line(1*OLED_FONT_WIDTH, 2 * OLED_FONT_HEIGHT + 2, 2*OLED_FONT_WIDTH, 2 * OLED_FONT_HEIGHT + 2);
+  display.display();
+}
+
+
+void generate_entropy_unsafe(unsigned char *entropy, size_t len) {
   for (size_t i = 0; i < len; i++) {
     entropy[i] = random(0, 256);
   }
 }
 
-void display_draw_entropy(const unsigned char *entropy, size_t len) {
+void generate_entropy_manually(unsigned char *entropy, size_t len) {
+  int state = button_pressed();
+  unsigned char byte = 0;
+  int i = 0;
+  while (i < len*8) {
+    delay(2);
+    int rand = random(1024);
+    int b = button_pressed();
+    if (b != state) {
+      state = b;
+      byte = (byte << 1) + rand%2;
+      i++;
+
+      entropy[i/8] = byte;
+
+      char buf[50];
+      sprintf(buf, "generating (%d/%d):", i, len*8);
+      display_draw_entropy(entropy, len, buf);
+    }
+  }
+}
+
+void display_draw_entropy(const unsigned char *entropy, size_t len, const char * header) {
   display.clear();
-  display.draw_string(0, 0, "Random seed UNSAFE! :");
+  display.draw_string(0, 0, header);
 
   // print left column index
   for (int i = 0; i < len; i += 8) {
@@ -142,7 +193,6 @@ void display_draw_entropy(const unsigned char *entropy, size_t len) {
     display_printf(((2 * (j % 8)) + 4) * OLED_FONT_WIDTH, (j / 8 + 2) * OLED_FONT_HEIGHT, "%02x", entropy[j]);
   }
 
-  display.draw_string(0, OLED_BOTTOM_LINE, "        show words ->");
   display.display();
 }
 
@@ -185,5 +235,18 @@ void display_draw_mnemonic_screen(const char **mnemonic, unsigned int entropy_bi
       delay(10);
       break;
     }
+  }
+}
+
+bool wait_for_button(int aTrue, int bFalse) {
+  while (true) {
+    int pressed = button_pressed();
+    if (pressed == aTrue) {
+      return true;
+    }
+    if (pressed == bFalse) {
+      return false;
+    }
+    delay(10);
   }
 }

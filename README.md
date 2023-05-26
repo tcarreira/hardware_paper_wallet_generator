@@ -27,7 +27,7 @@ When you are ready to withdraw funds from the wallet, you should perform the fol
 WIP - Work in Progress.
 (disclaimer: if any bullet is not complete yet, do not use this!)
 
-- [ ] Generate true random Entropy
+- [x] Generate true random Entropy
 - [x] Create a Seed
 - [x] Convert seed to mnemonic words
 - [ ] Show Master Public Key (xpub)
