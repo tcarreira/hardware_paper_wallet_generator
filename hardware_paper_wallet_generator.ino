@@ -2,6 +2,9 @@
 #include <oled.h>
 #include <string.h>
 
+#include "bcl/src/Sha512.hpp"
+#include "bcl/test/TestHelper.hpp"
+
 #include "bip39.h"
 #include "bip39_test_vectors.h"
 #include "bip39_words.h"
@@ -97,6 +100,15 @@ void loop() {
 
   display.clear();
   delay(500);
+
+
+  /*****************************************************************************
+  // Derive HMAC-SHA512
+  *****************************************************************************/
+  Bytes gotHash[bcl::Sha512::HASH_LEN];
+  Bytes key = hexBytes("0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B");
+  Bytes message = asciiBytes("Hi There");
+  bcl::Sha512::getHmac(key.data(), key.size(), message.data(), message.size(), gotHash);
 
 
   /*****************************************************************************
