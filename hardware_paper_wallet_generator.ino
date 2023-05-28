@@ -2,8 +2,8 @@
 #include <oled.h>
 #include <string.h>
 
-#include "bcl/src/Sha512.hpp"
-#include "bcl/test/TestHelper.hpp"
+// #include "bcl/src/Sha512.hpp"
+// #include "bcl/test/TestHelper.hpp"
 
 #include "bip39.h"
 #include "bip39_test_vectors.h"
@@ -34,7 +34,7 @@
 // OLED display=OLED(5,4); // working!!!! TTGO T1
 OLED display = OLED(PIN_I2C_SDA, PIN_I2C_SCL, PIN_I2C_RESET, OLED::W_128, OLED::H_64, OLED::CTRL_SSD1306, I2C_ADDRESS);
 
-void setup() {
+void main_setup() {
   delay(500);
   Serial.begin(9600);
   display.begin();
@@ -53,7 +53,7 @@ void setup() {
   randomSeed(analogRead(0));
 }
 
-void loop() {
+void main_loop() {
   display.clear();
   display.draw_string(0, 2 * OLED_FONT_HEIGHT, "       Bitcoin       ");
   display.draw_string(0, 3 * OLED_FONT_HEIGHT, "     Paper Wallet    ");
@@ -102,13 +102,13 @@ void loop() {
   delay(500);
 
 
-  /*****************************************************************************
-  // Derive HMAC-SHA512
-  *****************************************************************************/
-  Bytes gotHash[bcl::Sha512::HASH_LEN];
-  Bytes key = hexBytes("0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B");
-  Bytes message = asciiBytes("Hi There");
-  bcl::Sha512::getHmac(key.data(), key.size(), message.data(), message.size(), gotHash);
+  // /*****************************************************************************
+  // // Derive HMAC-SHA512
+  // *****************************************************************************/
+  // Bytes gotHash[bcl::Sha512::HASH_LEN];
+  // Bytes key = hexBytes("0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B");
+  // Bytes message = asciiBytes("Hi There");
+  // bcl::Sha512::getHmac(key.data(), key.size(), message.data(), message.size(), gotHash);
 
 
   /*****************************************************************************
@@ -254,4 +254,13 @@ bool wait_for_button(int aTrue, int bFalse) {
     }
     delay(10);
   }
+}
+
+void setup() {
+  // main_setup();
+  qr_code_setup();
+}
+void loop(){
+  // main_loop();
+  qr_code_loop();
 }

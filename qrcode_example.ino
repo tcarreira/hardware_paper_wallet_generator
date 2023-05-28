@@ -1,7 +1,3 @@
-#include <Arduino.h>
-#include <oled.h>
-#include <string.h>
-
 #include "QRCode/src/qrcode.h"
 #include "QRCode/src/qrcode.c"
 
@@ -9,37 +5,12 @@ const int QRcode_Version = 6;   //  set the version (range 1->40)
 const int QRcode_ECC = ECC_LOW;       //  set the Error Correction level (range 0-3) or symbolic (ECC_LOW, ECC_MEDIUM, ECC_QUARTILE and ECC_HIGH)
 
 QRCode qrcode;                  // Create the QR code
-#define PIN_I2C_SDA 5
-#define PIN_I2C_SCL 4
-#define PIN_I2C_RESET NO_RESET_PIN
-#define I2C_ADDRESS 0x3C
 uint8_t contrast = 150;
-
-
-#define LEFT_BUTTON_PIN 25
-#define LEFT_BUTTON_PIN_LOW 27
-#define RIGHT_BUTTON_PIN 17
-#define RIGHT_BUTTON_PIN_LOW 18
-#define BUTTON_NO_PRESS 0
-#define BUTTON_LEFT_PRESS 1
-#define BUTTON_RIGHT_PRESS 2
-
-#define ENTROPY_BITS 256 // 128 (12words), 160 (15w), 192 (18w), 224 (21w), 256 (24w)
-#define ENTROPY_BYTES (ENTROPY_BITS / 8)
-
-#define OLED_BOTTOM_LINE (7 * OLED_FONT_HEIGHT)
-
-// There are 2 different versions of the board
-// OLED display=OLED(2,14,4);
-// OLED display=OLED(4,5,16);
-// OLED display=OLED(5,4,16); // working!!!! TTGO T1
-// OLED display=OLED(5,4); // working!!!! TTGO T1
-OLED display = OLED(PIN_I2C_SDA, PIN_I2C_SCL, PIN_I2C_RESET, OLED::W_128, OLED::H_64, OLED::CTRL_SSD1306, I2C_ADDRESS);
 
 #define Lcd_X  128
 #define Lcd_Y  64
 
-void setup() {
+void qr_code_setup() {
   delay(500);
   Serial.begin(9600);
   display.begin();
@@ -160,7 +131,7 @@ void setup() {
   display.display();
 }
 
-void loop() {
+void qr_code_loop() {
   if (button_pressed() == BUTTON_LEFT_PRESS) {
     contrast -= 20;
     if (contrast < 0) {
@@ -181,22 +152,3 @@ void loop() {
   delay(100);
 }
 
-
-void display_printf(unsigned int x, unsigned int y, const char *format, ...) {
-  char buffer[128];
-  va_list args;
-  va_start(args, format);
-  vsnprintf(buffer, sizeof(buffer), format, args);
-  va_end(args);
-  display.draw_string(x, y, buffer);
-}
-
-int button_pressed() {
-  if (digitalRead(LEFT_BUTTON_PIN) == LOW) {
-    return BUTTON_LEFT_PRESS;
-  }
-  if (digitalRead(RIGHT_BUTTON_PIN) == LOW) {
-    return BUTTON_RIGHT_PRESS;
-  }
-  return BUTTON_NO_PRESS;
-}
