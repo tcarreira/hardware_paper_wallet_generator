@@ -132,18 +132,17 @@ void qr_code_setup() {
 }
 
 void qr_code_loop() {
-  if (button_pressed() == BUTTON_LEFT_PRESS) {
+  unsigned int pressed = button_pressed();
+  if ( pressed & BUTTON_LEFT_PRESS ) {
     contrast -= 20;
-    if (contrast < 0) {
-      contrast = 0;
+    if (contrast < 1) {
+      contrast = 1;
     }
     delay(500);
-  }
-
-  if (button_pressed() == BUTTON_RIGHT_PRESS) {
+  } else if (pressed & BUTTON_RIGHT_PRESS) {
     contrast += 20;
-    if (contrast > 255) {
-      contrast = 255;
+    if (contrast > 254) {
+      contrast = 254;
     }
     delay(500);
   }
