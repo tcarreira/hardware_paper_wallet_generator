@@ -68,14 +68,12 @@ void main_loop() {
   memset(entropy, 0, ENTROPY_BYTES);
 
   display_choose_entropy_mode();
-  if (wait_for_button(BUTTON_LEFT_PRESS, BUTTON_RIGHT_PRESS)) {
+  if (wait_for_button(BUTTON_LEFT_PRESS, BUTTON_RIGHT_PRESS)) { // Fast, but unsafe
     generate_entropy_unsafe(entropy, ENTROPY_BYTES);
     display_draw_entropy(entropy, ENTROPY_BYTES, "Random Seed (UNSAFE):");
-  } else {
-    char buf[40];
-    sprintf(buf, "generating (0/%d):", ENTROPY_BITS);
+  } else { // Slow. Safe mode. Recommended for production.
+    char buf[40]; sprintf(buf, "generating (0/%d):", ENTROPY_BITS);
     display_draw_entropy(entropy, ENTROPY_BYTES, buf);
-    delay(500);
     generate_entropy_manually(entropy, ENTROPY_BYTES);
     display_draw_entropy(entropy, ENTROPY_BYTES, "Random Seed:");
   }
@@ -83,7 +81,7 @@ void main_loop() {
   display.display();
 
   // wait for right button to continue
-  while (button_pressed() != BUTTON_RIGHT_PRESS) {
+  while ( ! (button_pressed() & BUTTON_RIGHT_PRESS) ) {
     delay(10);
   }
   display.clear();
@@ -242,11 +240,30 @@ bool wait_for_button(int aTrue, int bFalse) {
   }
 }
 
+int main_number = 0; // 0 = main, 1 = qr_code
+
 void setup() {
-  // main_setup();
-  qr_code_setup();
+  switch (main_number){
+  case 0:
+    main_setup();
+    break;
+  case 1:
+    qr_code_setup();
+    break;
+  default:
+    main_setup();
+  }
 }
 void loop() {
-  // main_loop();
-  qr_code_loop();
+
+  switch (main_number){
+  case 0:
+    main_loop();
+    break;
+  case 1:
+    qr_code_loop();
+    break;
+  default:
+    main_loop();
+  }
 }
