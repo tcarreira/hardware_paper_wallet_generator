@@ -15,9 +15,10 @@
 #define LEFT_BUTTON_PIN_LOW 27
 #define RIGHT_BUTTON_PIN 17
 #define RIGHT_BUTTON_PIN_LOW 18
+
 #define BUTTON_NO_PRESS 0
-#define BUTTON_LEFT_PRESS 1
-#define BUTTON_RIGHT_PRESS 2
+#define BUTTON_LEFT_PRESS 1 << 0
+#define BUTTON_RIGHT_PRESS 1 << 1
 
 #define ENTROPY_BITS 256 // 128 (12words), 160 (15w), 192 (18w), 224 (21w), 256 (24w)
 #define ENTROPY_BYTES (ENTROPY_BITS / 8)
@@ -111,14 +112,15 @@ void main_loop() {
   display.clear();
 }
 
-int button_pressed() {
+unsigned int button_pressed() {
+  unsigned int pressed = 0;
   if (digitalRead(LEFT_BUTTON_PIN) == LOW) {
-    return BUTTON_LEFT_PRESS;
+    pressed |= BUTTON_LEFT_PRESS;
   }
   if (digitalRead(RIGHT_BUTTON_PIN) == LOW) {
-    return BUTTON_RIGHT_PRESS;
+    pressed |= BUTTON_RIGHT_PRESS;
   }
-  return BUTTON_NO_PRESS;
+  return pressed;
 }
 
 void display_printf(unsigned int x, unsigned int y, const char *format, ...) {
@@ -140,10 +142,9 @@ void display_choose_entropy_mode() {
   display.draw_string(0, 5 * OLED_FONT_HEIGHT, " |                 | ");
   display.draw_string(0, 6 * OLED_FONT_HEIGHT, " |                 | ");
   display.draw_string(0, 7 * OLED_FONT_HEIGHT, " v (L)         (R) v ");
-  display.draw_line(1*OLED_FONT_WIDTH, 2 * OLED_FONT_HEIGHT + 2, 2*OLED_FONT_WIDTH, 2 * OLED_FONT_HEIGHT + 2);
+  display.draw_line(1 * OLED_FONT_WIDTH, 2 * OLED_FONT_HEIGHT + 2, 2 * OLED_FONT_WIDTH, 2 * OLED_FONT_HEIGHT + 2);
   display.display();
 }
-
 
 void generate_entropy_unsafe(unsigned char *entropy, size_t len) {
   for (size_t i = 0; i < len; i++) {
@@ -152,28 +153,28 @@ void generate_entropy_unsafe(unsigned char *entropy, size_t len) {
 }
 
 void generate_entropy_manually(unsigned char *entropy, size_t len) {
-  int state = button_pressed();
+  unsigned int state = button_pressed();
   unsigned char byte = 0;
   int i = 0;
-  while (i < len*8) {
+  while (i < len * 8) {
     delay(2);
     int rand = random(1024);
-    int b = button_pressed();
+    unsigned int b = button_pressed();
     if (b != state) {
       state = b;
-      byte = (byte << 1) + rand%2;
+      byte = (byte << 1) + rand % 2;
       i++;
 
-      entropy[i/8] = byte;
+      entropy[i / 8] = byte;
 
       char buf[50];
-      sprintf(buf, "generating (%d/%d):", i, len*8);
+      sprintf(buf, "generating (%d/%d):", i, len * 8);
       display_draw_entropy(entropy, len, buf);
     }
   }
 }
 
-void display_draw_entropy(const unsigned char *entropy, size_t len, const char * header) {
+void display_draw_entropy(const unsigned char *entropy, size_t len, const char *header) {
   display.clear();
   display.draw_string(0, 0, header);
 
@@ -215,18 +216,15 @@ void display_draw_mnemonic_screen(const char **mnemonic, unsigned int entropy_bi
       prev_screen = screen;
     }
 
-    switch (button_pressed()) {
-    case BUTTON_LEFT_PRESS:
+    unsigned int pressed = button_pressed();
+    if (pressed & BUTTON_LEFT_PRESS) {
       delay(200);
       screen > 0 && screen--;
-      break;
-    case BUTTON_RIGHT_PRESS:
+    } else if (pressed & BUTTON_RIGHT_PRESS) {
       delay(200);
       screen++;
-      break;
-    default:
+    } else {
       delay(10);
-      break;
     }
   }
 }
@@ -248,7 +246,7 @@ void setup() {
   // main_setup();
   qr_code_setup();
 }
-void loop(){
+void loop() {
   // main_loop();
   qr_code_loop();
 }
