@@ -31,7 +31,7 @@
 // OLED display=OLED(5,4); // working!!!! TTGO T1
 OLED display = OLED(PIN_I2C_SDA, PIN_I2C_SCL, PIN_I2C_RESET, OLED::W_128, OLED::H_64, OLED::CTRL_SSD1306, I2C_ADDRESS);
 
-void setup() {
+void main_setup() {
   delay(500);
   Serial.begin(9600);
   display.begin();
@@ -50,7 +50,7 @@ void setup() {
   randomSeed(analogRead(0));
 }
 
-void loop() {
+void main_loop() {
   display.clear();
   display.draw_string(0, 2 * OLED_FONT_HEIGHT, "       Bitcoin       ");
   display.draw_string(0, 3 * OLED_FONT_HEIGHT, "     Paper Wallet    ");
@@ -242,4 +242,13 @@ bool wait_for_button(int aTrue, int bFalse) {
     }
     delay(10);
   }
+}
+
+void setup() {
+  // main_setup();
+  qr_code_setup();
+}
+void loop(){
+  // main_loop();
+  qr_code_loop();
 }
