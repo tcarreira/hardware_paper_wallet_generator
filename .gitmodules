@@ -7,3 +7,6 @@
 [submodule "bcl"]
 	path = bcl
 	url = git@github.com:sleepdefic1t/bcl.git
+[submodule "QRCode"]
+	path = QRCode
+	url = git@github.com:ricmoo/QRCode.git
