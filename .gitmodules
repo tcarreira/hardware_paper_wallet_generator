@@ -10,3 +10,6 @@
 [submodule "QRCode"]
 	path = QRCode
 	url = git@github.com:ricmoo/QRCode.git
+[submodule "micro-ecc"]
+	path = micro-ecc
+	url = git@github.com:kmackay/micro-ecc.git
