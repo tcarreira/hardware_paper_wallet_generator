@@ -100,13 +100,13 @@ void main_loop() {
   display.clear();
   delay(500);
 
-  // /*****************************************************************************
-  // // Derive HMAC-SHA512
-  // *****************************************************************************/
+  /*****************************************************************************
+  // Derive HMAC-SHA512
+  *****************************************************************************/
   // Bytes gotHash[bcl::Sha512::HASH_LEN];
   // Bytes key = hexBytes("0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B");
   // Bytes message = asciiBytes("Hi There");
-  // bcl::Sha512::getHmac(key.data(), key.size(), message.data(), message.size(), gotHash);
+  // bcl::Sha512::getHmac(entropy, ENTROPY_BYTES, message.data(), message.size(), gotHash);
 
   /*****************************************************************************
   // End - Thank you
@@ -250,7 +250,7 @@ bool wait_for_button(int aTrue, int bFalse) {
   }
 }
 
-int main_number = 0; // 0 = main, 1 = qr_code
+int main_number = 2; // 0 = main, 1 = qr_code, 2 = secp256k1
 
 void setup() {
   switch (main_number){
@@ -260,6 +260,8 @@ void setup() {
   case 1:
     qr_code_setup();
     break;
+  case 2:
+    secp256k1_setup();
   default:
     main_setup();
   }
@@ -273,6 +275,8 @@ void loop() {
   case 1:
     qr_code_loop();
     break;
+  case 2:
+    secp256k1_loop();
   default:
     main_loop();
   }
