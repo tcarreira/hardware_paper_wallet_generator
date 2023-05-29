@@ -28,13 +28,13 @@ static int RNG(uint8_t *dest, unsigned size) {
 }
 
 void secp256k1_setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.print("Testing ecc\n");
   uECC_set_rng(&RNG);
 }
 
 void secp256k1_loop() {
-  const struct uECC_Curve_t *curve = uECC_secp160r1();
+  const struct uECC_Curve_t *curve = uECC_secp256k1();
   uint8_t private1[21];
   uint8_t private2[21];
 
@@ -46,6 +46,7 @@ void secp256k1_loop() {
 
   unsigned long a = millis();
   uECC_make_key(public1, private1, curve);
+  // EccPoint_compute_public_key(_public, _private, curve)
   unsigned long b = millis();
 
   Serial.print("Made key 1 in ");

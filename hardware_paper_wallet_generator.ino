@@ -37,7 +37,7 @@ OLED display = OLED(PIN_I2C_SDA, PIN_I2C_SCL, PIN_I2C_RESET, OLED::W_128, OLED::
 
 void main_setup() {
   delay(500);
-  Serial.begin(9600);
+  Serial.begin(115200);
   display.begin();
 
   pinMode(LEFT_BUTTON_PIN, INPUT_PULLUP);
