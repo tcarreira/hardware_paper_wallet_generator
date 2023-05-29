@@ -262,6 +262,7 @@ void setup() {
     break;
   case 2:
     secp256k1_setup();
+    break;
   default:
     main_setup();
   }
@@ -277,6 +278,7 @@ void loop() {
     break;
   case 2:
     secp256k1_loop();
+    break;
   default:
     main_loop();
   }
