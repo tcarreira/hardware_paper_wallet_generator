@@ -13,3 +13,6 @@
 [submodule "micro-ecc"]
 	path = micro-ecc
 	url = git@github.com:kmackay/micro-ecc.git
+[submodule "libbase58"]
+	path = libbase58
+	url = git@github.com:bitcoin/libbase58.git
