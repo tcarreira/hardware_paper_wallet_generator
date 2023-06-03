@@ -250,7 +250,7 @@ bool wait_for_button(int aTrue, int bFalse) {
   }
 }
 
-int main_number = 2; // 0 = main, 1 = qr_code, 2 = secp256k1
+int main_number = 3; // 0 = main, 1 = qr_code, 2 = secp256k1, 3 = hmac_sha512
 
 void setup() {
   switch (main_number){
@@ -262,6 +262,9 @@ void setup() {
     break;
   case 2:
     secp256k1_setup();
+    break;
+  case 3:
+    hmac_sha512_setup();
     break;
   default:
     main_setup();
@@ -278,6 +281,9 @@ void loop() {
     break;
   case 2:
     secp256k1_loop();
+    break;
+  case 3:
+    hmac_sha512_loop();
     break;
   default:
     main_loop();
