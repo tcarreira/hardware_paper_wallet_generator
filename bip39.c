@@ -1,6 +1,6 @@
 #include "bip39.h"
 #include "bip39_words.h"
-#include "sha-2/sha-256.c"
+#include "sha-256.h"
 #include <stdio.h>
 #include <stdlib.h>
 
