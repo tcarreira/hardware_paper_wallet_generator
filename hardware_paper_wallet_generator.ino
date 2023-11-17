@@ -6,6 +6,8 @@
 #include "bip39_test_vectors.h"
 #include "bip39_words.h"
 
+#define MAIN_FUNC 0 // 0 = main, 1 = qr_code
+
 #define PIN_I2C_SDA 5
 #define PIN_I2C_SCL 4
 #define PIN_I2C_RESET NO_RESET_PIN
@@ -240,10 +242,9 @@ bool wait_for_button(int aTrue, int bFalse) {
   }
 }
 
-int main_number = 0; // 0 = main, 1 = qr_code
 
 void setup() {
-  switch (main_number){
+  switch (MAIN_FUNC){
   case 0:
     main_setup();
     break;
@@ -256,7 +257,7 @@ void setup() {
 }
 void loop() {
 
-  switch (main_number){
+  switch (MAIN_FUNC){
   case 0:
     main_loop();
     break;
