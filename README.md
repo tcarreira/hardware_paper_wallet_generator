@@ -34,3 +34,12 @@ WIP - Work in Progress.
 - [ ] Sub-wallet Derivation (m/84'/0'/0')
   - [ ] Show Public Key (xpub)
   - [ ] Show Addresses
+
+## Arduino IDE
+
+- preferences > additional board libs:
+  https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+- tools > Board > Board Manager:
+  ESP32 by Espressif (tested with 2.0.14)
+- Sketch > Include library > from .zip file
+  add arduino-lib-oled compacted with zip

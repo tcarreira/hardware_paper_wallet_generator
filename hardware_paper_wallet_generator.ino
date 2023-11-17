@@ -59,7 +59,7 @@ void main_loop() {
   display.draw_string(0, 2 * OLED_FONT_HEIGHT, "       Bitcoin       ");
   display.draw_string(0, 3 * OLED_FONT_HEIGHT, "     Paper Wallet    ");
   display.draw_string(0, 4 * OLED_FONT_HEIGHT, "      Generator      ");
-  display.draw_string(0, 1 * OLED_BOTTOM_LINE, "2023-05-26 |  23-5-26");
+  display.draw_string(0, 1 * OLED_BOTTOM_LINE, "2023-05-26 | 23-11-17");
   display.display();
   delay(1500);
 
@@ -250,7 +250,7 @@ bool wait_for_button(int aTrue, int bFalse) {
   }
 }
 
-int main_number = 3; // 0 = main, 1 = qr_code, 2 = secp256k1, 3 = hmac_sha512
+int main_number = 0; // 0 = main, 1 = qr_code, 2 = secp256k1, 3 = hmac_sha512
 
 void setup() {
   switch (main_number){
