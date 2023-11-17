@@ -56,7 +56,7 @@ void main_loop() {
   display.draw_string(0, 2 * OLED_FONT_HEIGHT, "       Bitcoin       ");
   display.draw_string(0, 3 * OLED_FONT_HEIGHT, "     Paper Wallet    ");
   display.draw_string(0, 4 * OLED_FONT_HEIGHT, "      Generator      ");
-  display.draw_string(0, 1 * OLED_BOTTOM_LINE, "2023-05-26 |  23-5-26");
+  display.draw_string(0, 1 * OLED_BOTTOM_LINE, "2023-05-26 | 23-11-17");
   display.display();
   delay(1500);
 
